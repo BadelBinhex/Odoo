@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+         <!-- Sessions-->
+         <record model="ir.actions.act_window" id="model_sessions_view_graph">
+            <field name="name">Sessions</field>
+            <field name="res_model">openacademy.sessions</field>
+            <field name="view_mode">graph</field>
+            <field name="view_id" ref="open_academy.openacademy_session_graph_view" />
+        </record>
+        <record model="ir.actions.act_window" id="model_sessions_view_calendar">
+            <field name="name">Sessions</field>
+            <field name="res_model">openacademy.sessions</field>
+            <field name="view_mode">calendar</field>
+            <field name="view_id" ref="open_academy.session_calendar_view" />
+        </record>
+        <record model="ir.actions.act_window" id="model_course_view_tree">
+            <field name="name">Course</field>
+            <field name="res_model">openacademy.course</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="open_academy.model_course_list" />
+        </record>
+        <!-- Formulario Dasboard -->
+        <record model="ir.ui.view" id="board_session_form">
+            <field name="name">Session Dashboard Form</field>
+            <field name="model">board.board</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Session Dashboard">
+                    <board style="2-1">
+                        <column>
+                            <action
+                                string="Attendees by course"
+                                name="%(model_sessions_view_graph)d"
+                                height="120"
+                                width="300"/>
+                            <action
+                                string="Sessions"
+                                name="%(model_sessions_view_calendar)d"/>
+                        </column>
+                        <column>
+                            <action
+                                string="Courses"
+                                name="%(model_course_view_tree)d"/>
+                        </column>
+                    </board>
+                </form>
+            </field>
+        </record>
+        <!-- Nuevos Campos-->
+        <!-- Dasboard -->
+        <record model="ir.actions.act_window" id="open_board_session">
+            <field name="name">Session Dashboard</field>
+            <field name="res_model">board.board</field>
+            <field name="view_mode">form</field>
+            <field name="usage">menu</field>
+            <field name="view_id" ref="open_academy.board_session_form" />
+        </record>
+       
+        <menuitem name="Session Dashboard" id="menu_board_session"
+            parent="open_academy.menu_root"
+            sequence="1"
+            action="open_board_session" />
+    </data>
+</odoo>

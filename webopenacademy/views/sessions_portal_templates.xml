@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="portal_layout" name="Portal layout : sessions menu entries"
+        inherit_id="portal.portal_breadcrumbs" priority="40">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'sessions'" class="col-lg-2"
+                t-attf-class="breadcrumb-item #{'active ' if not session else ''}">
+                <a t-if="sessions" t-attf-href="/webopenacademy/sessions?{{ keep_query() }}">
+                    Sessions</a>
+                <t t-else="">Sessions</t>
+            </li>
+            <li t-if="sessions" class="breadcrumb-item active text-truncate col-8 col-lg-10">
+                <t>Sessions</t>
+            </li>
+        </xpath>
+    </template>
+
+    <template id="portal_my_home" name="Portal My Home : Sessions"
+        inherit_id="portal.portal_my_home">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Sessions</t>
+                <t t-set="url" t-value="'/my/sessions'" />
+                <t t-set="placeholder_count" t-value="count_sessions" />
+            </t>
+        </xpath>
+    </template>
+    <template id="portal_my_sessions" name="Sessions">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True" />
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Sessions</t>
+            </t>
+            <t t-if="not sessions">
+                <p>There are currently no session available.</p>
+            </t>
+            <t t-if="sessions" t-call="portal.portal_table">
+                <thead>
+                    <tr class="active">
+                        <th class="text-left">SESSIONS NAMES</th>
+                        <th class="text-right">STAR DATE</th>
+                    </tr>
+                </thead>
+                <t t-foreach="sessions" t-as="session">
+                    <tr>
+                        <td class="text-left"
+                            t-if="partner not in session.register_partners.mapped('id')">
+                            <a t-att-href="'http://10.1.0.52//my/sessions//'+str(session.id)">
+                                <span t-field="session.name" />
+                            </a>
+                        </td>
+                        <td class="text-right"
+                            t-if="partner not in session.register_partners.mapped('id')">
+                            <span t-field="session.start_date" />
+                        </td>
+                    </tr>
+                </t>
+            </t>
+        </t>
+    </template>
+    <template id="data_sessions" name="Session Data">
+        <t t-call="website.layout">
+            <div class="oe_structure">
+                <div class="container">
+                    <div class="breadcrumbs_searchbar session2_breadcrumbs o_portal container mt-3"
+                        t-value="True" style="background-color: #f2f2f2;padding: 10px;">
+                        <item>
+                            <a t-att-href="'http://10.1.0.52//my/sessions//'">My Sessions</a>
+                        </item>
+                        <item>
+                            <a> / </a>
+                        </item>
+                        <item>
+                            <t t-foreach="sessions" t-as="sesionn">
+                                <a t-esc="sesionn.name" />
+                            </t>
+                        </item>
+                    </div>
+                    <br />
+                    <center>
+                        <h3>SESSION DATA</h3>
+                    </center>
+                    <br />
+                    <table class="table-striped table">
+                        <thead style="font-size: 23px;">
+                            <tr>
+                                <h6>
+                                    <b>
+                                        <th>NAME SESSION</th>
+                                        <th>INSTRUCTORS</th>
+                                        <th>START - END DATE</th>
+                                        <th>TOTAL SEATS</th>
+                                        <th></th>
+                                    </b>
+                                </h6>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="sessions" t-as="sesiones">
+                                <tr>
+                                    <td class="text-left">
+                                        <span t-esc="sesiones.name" />
+                                    </td>
+                                    <td class="text-left">
+                                        <span t-esc="sesiones.instructores.name" />
+                                    </td>
+                                    <td class="text-left"><span t-esc="sesiones.start_date" /> - <span
+                                            t-esc="sesiones.end_date" /></td>
+                                    <td class="text-left">
+                                        <span t-esc="sesiones.seats" />
+                                    </td>
+                                    <t>
+                                        <td
+                                            t-if="partner not in sessions.register_partners.mapped('id')">
+                                            <button type="button" class="btn btn-default">
+                                                <a
+                                                    t-att-href="'http://10.1.0.52//my//sessions//'+str(sesiones.id)+'//updated'"
+                                                    class="btn btn-primary rounded-circle btn-sm">Join
+                                                    to Session</a>
+                                            </button>
+                                        </td>
+                                        <td t-else="">
+                                            <button type="button" class="btn btn-default">
+                                                <a
+                                                    t-att-href="'http://10.1.0.52//my//sessions//'+str(sesiones.id)+'//unjoin'"
+                                                    class="btn btn-primary rounded-circle btn-sm">Unjoin</a>
+                                            </button>
+                                        </td>
+                                    </t>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                    <div class="mt32">
+                        <h4>
+                            <strong>Chatter of Sessions</strong>
+                        </h4>
+                        <t t-call="portal.message_thread">
+                            <t t-set="object" t-value="sessions" />
+                            <t t-set="token" t-value="sessions.access_token" />
+                            <t t-set="pid" t-value="pid" />
+                            <t t-set="hash" t-value="hash" />
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+    <!-- Registro a la sesión -->
+    <template id="new_partner" name="Registered">
+        <t t-call="website.layout">
+            <div class="oe_structure">
+                <div class="container">
+                    <div class="breadcrumbs_searchbar session2_breadcrumbs o_portal container mt-3"
+                        t-value="True" style="background-color: #f2f2f2;padding: 10px;">
+                        <item>
+                            <a t-att-href="'http://10.1.0.52//my/sessions//'">My Sessions</a>
+                        </item>
+                        <item>
+                            <a> / </a>
+                        </item>
+                        <item>
+                            <t t-foreach="sesion" t-as="sesionn">
+                                <a t-att-href="'http://10.1.0.52//my/sessions//'+str(sesionn.id)" t-esc="sesionn.id">
+                                </a>
+                            </t>
+                        </item>
+                    </div>
+                    <div class="alert alert-success" role="alert">
+                        <p t-esc="message"/>
+                        <t t-foreach="sesion" t-as="sesionn">
+                            <a t-att-href="'http://10.1.0.52//my/sessions//'+str(sesionn.id)">Go Back</a>
+                        </t>
+                    </div>
+                </div>
+            </div>
+            <div>
+            </div>
+        </t>
+    </template>
+    <!-- Desinscribirse de la sesión-->
+    <template id="unjoin_partner" name="Unjoin Success">
+        <t t-call="website.layout">
+            <div class="container">
+                <div class="alert alert-success">
+                    <button type="button" class="close" data-dismiss="alert">×</button>
+                    <p><t t-esc="message"/></p>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <t t-foreach="sesion" t-as="sesionn">
+                            <a t-att-href="'http://10.1.0.52//my/sessions//'+str(sesionn.id)">Go Back</a>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>
