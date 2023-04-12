@@ -150,7 +150,7 @@
         </t>
     </template>
     <!-- Registro a la sesión -->
-    <template id="new_partner" name="Registered">
+    <!--<template id="new_partner" name="Registered">
         <t t-call="website.layout">
             <div class="oe_structure">
                 <div class="container">
@@ -180,7 +180,7 @@
             <div>
             </div>
         </t>
-    </template>
+    </template>-->
     <!-- Desinscribirse de la sesión-->
     <template id="unjoin_partner" name="Unjoin Success">
         <t t-call="website.layout">

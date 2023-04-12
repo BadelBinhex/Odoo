@@ -25,9 +25,10 @@
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
-        'views/views.xml',
         'views/navbar.xml',
-        'views/templates.xml',
+        'views/filters.xml',
+        'views/courses.xml',
+        'views/sessions_courses.xml',
         'views/sessions_portal_templates.xml',
         
     ],
