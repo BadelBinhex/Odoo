@@ -414,6 +414,15 @@
                                     <td class="text-left">
                                         <span t-esc="sesiones.seats" />
                                     </td>
+                                    <td
+                                        t-if="partner not in sessions.register_partners.mapped('id')">
+                                        <button type="button" class="btn btn-default">
+                                            <a
+                                                t-att-href="'http://10.1.0.52//my//sessions//'+str(sesiones.id)+'//updated'"
+                                                class="btn btn-primary rounded-circle btn-sm">Join
+                                                to Session</a>
+                                        </button>
+                                    </td>
                                 </tr>
                             </t>
                         </tbody>
