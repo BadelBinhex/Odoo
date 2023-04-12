@@ -8,6 +8,14 @@ import logging
 _logger = logging.getLogger(__name__)
 
 class Webopenacademy(http.Controller):
+    
+    def _prepare_home_portal_values(self,counters):
+        values = super()._prepare_home_portal_values(counters)
+        count_sessions = http.request.env['openacademy.sessions'].search_count([('active','=',True)])
+        values.update({
+            'count_sessions': count_sessions,
+        })
+        return values
     #Mostrar todos los cursos
     @http.route(['/webopenacademy/list_courses/page/<page>','/webopenacademy/list_courses/','/'], type='http', website=True, auth="public")
     def list_courses(self,offset=None,search='',order='',filtre='',page=0, **post):
@@ -112,12 +120,5 @@ class Webopenacademy(http.Controller):
 
         message = "You have been unjoined of the session!"
         return request.render('webopenacademy.unjoin_partner', {'message': message})
-class AcademyCustomerPortal(CustomerPortal):
 
-    def _prepare_home_portal_values(self,counters):
-        values = super()._prepare_home_portal_values(counters)
-        count_sessions = http.request.env['openacademy.sessions'].search_count([('active','=',True)])
-        values.update({
-            'count_sessions': count_sessions,
-        })
-        return values
+    
