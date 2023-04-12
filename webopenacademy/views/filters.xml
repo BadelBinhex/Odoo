@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Buscador-->
+    <template id="openacademy_search_box" inherit_id="website.website_search_box">
+        <xpath expr="//input[@name='search']" position="attributes">
+            <attribute name="data-limit">0</attribute>
+            <attribute name="data-display-title">true</attribute>
+        </xpath>
+        <xpath expr="//div[@role='search']" position="replace">
+            <form t-att-action="'/webopenacademy/list_courses/'" method="get"
+                t-att-data-snippet="_snippet">
+                <t>$0</t>
+                <input name="order" type="hidden" class="o_wsale_search_order_by" value="" />
+                <t t-raw="0" />
+            </form>
+        </xpath>
+    </template>
+    <template id="search_id" name="Search Box">
+        <t t-call="webopenacademy.openacademy_search_box">
+            <t t-set="action" t-attf-value="keep('/webopenacademy/list_courses/', search=0)" />
+        </t>
+    </template>
+
+    <!-- Filtros -->
+    <template id="sort" customize_show="True" name="Show Sort by">
+        <t t-set="list_sorted_asc_label">Sort from 'A' to 'Z'</t>
+        <t t-set="list_sorted_desc_label">Sort from 'Z' to 'A'</t>
+        <t t-set="website_course_sortable"
+            t-value="[
+            (list_sorted_asc_label, 'title asc'),
+            (list_sorted_desc_label, 'title des')]" />
+
+        <t t-set="website_course_sortable_current"
+            t-value="[sort for sort in website_course_sortable if sort[1]==request.params.get('order', '')]" />
+        <div class="dropdown mt-2 ml-md-2 dropdown_sorty_by">
+            <a role="button" href="#" class="dropdown-toggle btn btn-secondary"
+                data-toggle="dropdown">
+                <span class="d-none d-lg-inline">
+                    <t t-if='len(website_course_sortable_current)'> Sorting by : <t
+                            t-raw='website_course_sortable_current[0][0]' />
+                    </t>
+                    <t t-else='1'>Sort by</t>
+                </span>
+                <i class="fa fa-sort-amount-asc d-lg-none" />
+            </a>
+            <div class="dropdown-menu dropdown-menu-right" role="menu">
+                <t t-foreach="website_course_sortable" t-as="sortby">
+                    <a role="menuitem" rel="noindex,nofollow"
+                        t-att-href="keep('/webopenacademy/list_courses/', order=sortby[1])"
+                        class="dropdown-item">
+                        <span t-raw="sortby[0]" />
+                    </a>
+                </t>
+            </div>
+        </div>
+    </template>
+
+    <template id="sort_avaible" customize_show="True" name="Filter By">
+        <t t-set="session_available">Available Sessions</t>
+        <t t-set="coursito_sortable"
+            t-value="[
+            (session_available, 'datasesion')
+        ]" />
+        <t t-set="website_courses_current"
+            t-value="[sort_avaible for sort_avaible in coursito_sortable if sort_avaible[1]==request.params.get('filtre', '')]" />
+        <div class="dropdown mt-2 ml-md-2 dropdown_sorty_by">
+            <a role="button" href="#" class="dropdown-toggle btn btn-secondary"
+                data-toggle="dropdown">
+                <span class="d-none d-lg-inline">
+                    <t t-if='len(website_courses_current)'> Filter by : <t
+                            t-raw='website_courses_current[0][0]' />
+                    </t>
+                    <t t-else='1'>
+                        Filter by
+                    </t>
+                </span>
+                <i class="fa fa-sort-amount-asc d-lg-none" />
+            </a>
+            <div class="dropdown-menu dropdown-menu-right" role="menu">
+                <t t-foreach="coursito_sortable" t-as="sortby">
+                    <a role="menuitem" rel="noindex,nofollow"
+                        t-att-href="keep('/webopenacademy/list_courses/', filt=sortby[1])"
+                        class="dropdown-item">
+                        <span t-raw="sortby[0]" />
+                    </a>
+                </t>
+            </div>
+        </div>
+    </template>
+
+    
+    <!-- Página donde se muestra todos los documentos subidos-->
+    <template id="archivos_curso">
+        <t t-call="website.layout">
+            <div class="oe_structure">
+                <div class="breadcrumbs_searchbar session_breadcrumbs o_portal container    mt-3"
+                    t-value="True" style="background-color: #f2f2f2;padding: 10px;">
+                    <item>
+                        <a t-att-href="'/webopenacademy/list_courses/'">All Courses</a>
+                    </item>
+                    <item>
+                        <span>/course/</span>
+                    </item>
+                    <item>
+                        <t t-foreach="id_curso" t-as="cursito_id">
+                            <a t-att-href="'/webopenacademy/course/'+str(cursito_id.id)+'/data'"
+                                t-esc="cursito_id.id">
+                                /data
+                            </a>
+                        </t>
+                    </item>
+                </div>
+                <div class="container text-center align-center">
+                    <t t-name="webopenacademy.archivos_curso">
+                        <h1>Archivos del curso</h1>
+                        <ul>
+                            <t t-foreach="archivos" t-as="archivo">
+                                <li style="list-style-type: none;">
+                                    <a t-attf-href="/web/content/{{archivo.id}}?download=true"
+                                        t-esc="archivo.name"></a>
+                                </li>
+                            </t>
+                        </ul>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>
